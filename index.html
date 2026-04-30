@@ -1141,21 +1141,20 @@
       return (
         <div style={{minHeight:"100vh",background:"#f0edf8",paddingBottom:40}}>
           {/* Header */}
-          <div style={{background:"#fff",padding:"40px 20px 24px",textAlign:"center",boxShadow:"0 2px 16px rgba(0,0,0,0.05)"}}>
-            <img src="logo.png" alt="One More Rep" style={{width:80,height:80,borderRadius:18,margin:"0 auto 16px",display:"block",objectFit:"cover",boxShadow:"0 8px 24px rgba(0,0,0,0.15)"}} />
-            <p style={{color:"#7c3aed",fontWeight:700,fontSize:15,fontStyle:"italic",margin:"0 0 6px",lineHeight:1.5,padding:"0 24px"}}>
-              "{getDailyPhrase()}"
-            </p>
-            <p style={{color:"#9ca3af",marginTop:0,fontSize:13,fontWeight:500,marginBottom:12,textTransform:"capitalize"}}>
-              {new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"})}
-            </p>
-            <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
-              <button onClick={()=>setShowHistory(true)} style={{background:"#ede9fe",border:"none",color:"#7c3aed",borderRadius:12,padding:"8px 20px",fontWeight:800,fontSize:13,cursor:"pointer"}}>
-                📅 Histórico semanal
-              </button>
-              <button onClick={()=>setShowMonthly(true)} style={{background:"#fdf4ff",border:"none",color:"#a855f7",borderRadius:12,padding:"8px 20px",fontWeight:800,fontSize:13,cursor:"pointer"}}>
-                📊 Desempenho do mês
-              </button>
+          <div style={{background:"#fff",boxShadow:"0 2px 16px rgba(0,0,0,0.05)"}}>
+            <img src="header-banner.png" alt="Reality is created by the mind" style={{width:"100%",display:"block",objectFit:"cover",maxHeight:280}} />
+            <div style={{padding:"16px 20px 20px",textAlign:"center"}}>
+              <p style={{color:"#9ca3af",margin:"0 0 14px",fontSize:13,fontWeight:500,textTransform:"capitalize"}}>
+                {new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"})}
+              </p>
+              <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
+                <button onClick={()=>setShowHistory(true)} style={{background:"#ede9fe",border:"none",color:"#7c3aed",borderRadius:12,padding:"8px 20px",fontWeight:800,fontSize:13,cursor:"pointer"}}>
+                  📅 Histórico semanal
+                </button>
+                <button onClick={()=>setShowMonthly(true)} style={{background:"#fdf4ff",border:"none",color:"#a855f7",borderRadius:12,padding:"8px 20px",fontWeight:800,fontSize:13,cursor:"pointer"}}>
+                  📊 Desempenho do mês
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1216,6 +1215,13 @@
                 });
               })()}
             </div>
+          </div>
+
+          {/* Frase motivacional do dia */}
+          <div style={{padding:"24px 24px 8px",textAlign:"center"}}>
+            <p style={{color:"#a855f7",fontWeight:700,fontSize:14,fontStyle:"italic",margin:0,lineHeight:1.6}}>
+              "{getDailyPhrase()}"
+            </p>
           </div>
 
           {showHistory && <WeekHistoryModal onClose={()=>setShowHistory(false)}/>}
