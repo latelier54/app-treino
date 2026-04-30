@@ -768,7 +768,10 @@
         return !!custom[dayIndex];
       });
       const [editMode, setEditMode] = React.useState(false);
-      const [restCompleted, setRestCompleted] = React.useState(() => storageGet(workoutDoneKey(todayKey()), false));
+      const [restCompleted, setRestCompleted] = React.useState(() =>
+        storageGet(workoutDoneKey(todayKey()), false) &&
+        storageGet(workoutLabelKey(todayKey()), null) === baseWorkout.label
+      );
       const [completedSets, setCompletedSets] = React.useState(() => storageGet(completedKey(), {}));
       const [skipped, setSkipped] = React.useState(() => storageGet(skippedKey(), []));
       const [restActive, setRestActive] = React.useState(false);
@@ -1135,7 +1138,7 @@
                   const doneEx = w.exercises.filter(ex =>
                     (completed[ex.id]||[]).length === ex.sets || skippedToday.includes(ex.id)
                   ).length;
-                  const doneThisWeek = !w.rest && thisWeekDates.some(date =>
+                  const doneThisWeek = thisWeekDates.some(date =>
                     storageGet(workoutDoneKey(date), false) &&
                     storageGet(workoutLabelKey(date), null) === w.label
                   );
