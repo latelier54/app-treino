@@ -11,7 +11,7 @@
     "theme_color": "#a855f7",
     "icons": [
         {
-            "src": "logo.png",
+            "src": "header-banner.png",
             "sizes": "any",
             "type": "image/png",
             "purpose": "any maskable"
