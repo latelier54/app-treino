@@ -1171,10 +1171,12 @@
               {(() => {
                 const thisWeekDates = getThisWeekDates();
                 const skippedToday = storageGet(skippedKey(), []);
+                const customWorkouts = storageGet('custom_workouts', {});
                 return WORKOUTS.map((w, idx) => {
-                  const totalEx = w.exercises.length;
+                  const currentExercises = customWorkouts[idx] ? customWorkouts[idx] : w.exercises;
+                  const totalEx = currentExercises.length;
                   const completed = storageGet(completedKey(), {});
-                  const doneEx = w.exercises.filter(ex =>
+                  const doneEx = currentExercises.filter(ex =>
                     (completed[ex.id]||[]).length === ex.sets || skippedToday.includes(ex.id)
                   ).length;
                   const doneThisWeek = thisWeekDates.some(date =>
