@@ -11,9 +11,9 @@
     "theme_color": "#a855f7",
     "icons": [
         {
-            "src": "gym-icon.jpg",
+            "src": "logo.png",
             "sizes": "any",
-            "type": "image/jpeg",
+            "type": "image/png",
             "purpose": "any maskable"
         },
         {
