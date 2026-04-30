@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>💪 Meu Treino</title>
+  <meta name="theme-color" content="#f0edf8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f0edf8; font-family: 'Segoe UI', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #ede9fe; }
+    ::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 2px; }
+    button { font-family: inherit; }
+    input { font-family: inherit; }
+    select { font-family: inherit; }
+  </style>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-title" content="Meu Treino">
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+
+    // ─── WORKOUT DATA ────────────────────────────────────────────────────────────
+
+    const WORKOUTS = [
+      {
+        label: "Treino A",
+        emoji: "💪",
+        color: "#a855f7",
+        subtitle: "Peito + Tríceps",
+        exercises: [
+          { id: "s1e1", name: "Supino reto com halteres", sets: 4, reps: "10-12" },
+          { id: "s1e2", name: "Supino inclinado com halteres", sets: 3, reps: "10-12" },
+          { id: "s1e3", name: "Crossover cabo (médio)", sets: 3, reps: "12-15" },
+          { id: "s1e4", name: "Crucifixo inclinado", sets: 3, reps: "12-15" },
+          { id: "s1e5", name: "Tríceps corda no cabo", sets: 3, reps: "12-15" },
+          { id: "s1e6", name: "Tríceps testa com halteres", sets: 3, reps: "10-12" },
+          { id: "s1e7", name: "Mergulho no banco", sets: 3, reps: "12" },
+        ],
+      },
+      {
+        label: "Treino B",
+        emoji: "🦵",
+        color: "#f97316",
+        subtitle: "Quadríceps + Panturrilha",
+        exercises: [
+          { id: "s2e1", name: "Leg press 45°", sets: 4, reps: "10-12" },
+          { id: "s2e2", name: "Leg press 45° pegada fechada e alta", sets: 3, reps: "12" },
+          { id: "s2e3", name: "Cadeira extensora", sets: 4, reps: "12-15" },
+          { id: "s2e4", name: "Cadeira extensora unilateral", sets: 3, reps: "12 cada lado" },
+          { id: "s2e5", name: "Wall sit com halter", sets: 3, reps: "30-40seg" },
+          { id: "s2e6", name: "Panturrilha no leg press", sets: 4, reps: "15-20" },
+          { id: "s2e7", name: "Panturrilha em pé na máquina", sets: 3, reps: "15-20" },
+        ],
+      },
+      {
+        label: "Treino C",
+        emoji: "🏋️",
+        color: "#ec4899",
+        subtitle: "Costas + Bíceps",
+        exercises: [
+          { id: "s3e1", name: "Puxada frontal pegada aberta", sets: 4, reps: "10-12" },
+          { id: "s3e2", name: "Puxada pegada supinada fechada", sets: 3, reps: "10-12" },
+          { id: "s3e3", name: "Remada sentada triângulo", sets: 4, reps: "10-12" },
+          { id: "s3e4", name: "Remada unilateral com halter apoiado", sets: 3, reps: "10-12 cada lado" },
+          { id: "s3e5", name: "Pullover no cabo", sets: 3, reps: "12-15" },
+          { id: "s3e6", name: "Face pull", sets: 3, reps: "15" },
+          { id: "s3e7", name: "Rosca direta com barra W", sets: 4, reps: "8-10" },
+          { id: "s3e8", name: "Rosca inclinada com halteres", sets: 3, reps: "10-12" },
+          { id: "s3e9", name: "Rosca concentrada", sets: 3, reps: "12 cada lado" },
+          { id: "s3e10", name: "Rosca martelo", sets: 3, reps: "12" },
+          { id: "s3e11", name: "Rosca 21 com barra W", sets: 2, reps: "21" },
+        ],
+      },
+      {
+        label: "Treino D",
+        emoji: "🔥",
+        color: "#f43f5e",
+        subtitle: "Ombro",
+        exercises: [
+          { id: "s5e1", name: "Desenvolvimento com halteres sentado", sets: 4, reps: "10-12" },
+          { id: "s5e2", name: "Elevação lateral com halteres", sets: 4, reps: "12-15" },
+          { id: "s5e3", name: "Elevação lateral no cabo unilateral", sets: 3, reps: "15 cada lado" },
+          { id: "s5e4", name: "Face pull no cabo", sets: 4, reps: "15" },
+          { id: "s5e5", name: "Elevação frontal alternada com halter", sets: 3, reps: "12" },
+          { id: "s5e6", name: "Encolhimento com halteres", sets: 3, reps: "12-15" },
+        ],
+      },
+      {
+        label: "Treino E",
+        emoji: "🍑",
+        color: "#84cc16",
+        subtitle: "Posterior + Glúteo",
+        exercises: [
+          { id: "s6e1", name: "Cadeira flexora deitada", sets: 4, reps: "12-15" },
+          { id: "s6e2", name: "Cadeira flexora sentada", sets: 4, reps: "12-15" },
+          { id: "s6e3", name: "Mesa flexora", sets: 3, reps: "12" },
+          { id: "s6e4", name: "Leg curl no cabo em pé unilateral", sets: 3, reps: "12 cada lado" },
+          { id: "s6e5", name: "Hip thrust no smith", sets: 4, reps: "12" },
+          { id: "s6e6", name: "Abdução no cabo em pé", sets: 3, reps: "15 cada lado" },
+          { id: "s6e7", name: "Glúteo no cabo extensão quadril", sets: 3, reps: "15 cada lado" },
+          { id: "s6e8", name: "Abdução sentada na máquina", sets: 3, reps: "15-20" },
+        ],
+      },
+      {
+        label: "Dia de Descanso",
+        emoji: "😴",
+        color: "#a78bfa",
+        rest: true,
+        info: "Descanse, recupere e volte mais forte! 💜",
+        exercises: [],
+      },
+    ];
+
+    const CARDIO_OPTIONS = ["Velocity", "Bike Indoor", "Escada", "Esteira elevada"];
+
+    // ─── STORAGE HELPERS ─────────────────────────────────────────────────────────
+
+    function storageGet(key, fallback) {
+      try {
+        const v = localStorage.getItem(key);
+        return v !== null ? JSON.parse(v) : fallback;
+      } catch { return fallback; }
+    }
+
+    function storageSet(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+    }
+
+    function todayKey() { return new Date().toISOString().slice(0, 10); }
+    function weightKey(exerciseId, date) { return `weight_${exerciseId}_${date || todayKey()}`; }
+    function historyKey(exerciseId) { return `history_${exerciseId}`; }
+    function completedKey(date) { return `completed_${date || todayKey()}`; }
+    function skippedKey(date) { return `skipped_${date || todayKey()}`; }
+    function waterKey(date) { return `daily_water_${date || todayKey()}`; }
+    function cardioKey(date) { return `daily_cardio_${date || todayKey()}`; }
+    function cardioTypeKey(date) { return `daily_cardio_type_${date || todayKey()}`; }
+    function workoutDoneKey(date) { return `workout_done_${date || todayKey()}`; }
+    function workoutLabelKey(date) { return `workout_label_${date || todayKey()}`; }
+    function solarKey(date) { return `daily_solar_${date || todayKey()}`; }
+    function bibleKey(date) { return `daily_bible_${date || todayKey()}`; }
+    function vitaminsKey(date) { return `daily_vitamins_${date || todayKey()}`; }
+
+    function getThisWeekDates() {
+      const now = new Date();
+      const day = now.getDay();
+      const monday = new Date(now);
+      monday.setDate(now.getDate() - ((day + 6) % 7));
+      return Array.from({length:7}, (_, i) => {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        return d.toISOString().slice(0, 10);
+      });
+    }
+
+    // ─── CONFETTI ────────────────────────────────────────────────────────────────
+
+    function Confetti() {
+      const colors = ["#a855f7","#f97316","#ec4899","#22d3ee","#f43f5e","#84cc16","#facc15","#fb923c"];
+      return (
+        <div style={{position:"fixed",top:0,left:0,width:"100%",height:"100%",pointerEvents:"none",overflow:"hidden",zIndex:9999}}>
+          <style>{`@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}`}</style>
+          {Array.from({length:60},(_,i)=>{
+            const color=colors[i%colors.length];
+            const left=Math.random()*100;
+            const delay=Math.random()*3;
+            const dur=2.5+Math.random()*2;
+            const size=8+Math.random()*8;
+            return <div key={i} style={{position:"absolute",left:`${left}%`,top:0,width:size,height:size,backgroundColor:color,borderRadius:Math.random()>0.5?"50%":"3px",animation:`confettiFall ${dur}s ${delay}s ease-in forwards`}}/>;
+          })}
+        </div>
+      );
+    }
+
+    // ─── REST TIMER ──────────────────────────────────────────────────────────────
+
+    function RestTimer({initialSeconds, onSkip, onDone}) {
+      const [remaining, setRemaining] = React.useState(initialSeconds);
+      const [finished, setFinished] = React.useState(false);
+      const totalRef = React.useRef(initialSeconds);
+      const intervalRef = React.useRef(null);
+
+      React.useEffect(() => {
+        if (remaining <= 0) {
+          clearInterval(intervalRef.current);
+          setFinished(true);
+          const t = setTimeout(onDone, 2500);
+          return () => clearTimeout(t);
+        }
+        clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(() => setRemaining(p => p - 1), 1000);
+        return () => clearInterval(intervalRef.current);
+      }, [remaining]);
+
+      function handleAdd30() {
+        totalRef.current += 30;
+        setFinished(false);
+        setRemaining(p => p + 30);
+      }
+
+      const pct = Math.max(0, (remaining / totalRef.current) * 100);
+      const isLow = remaining <= 10;
+
+      return (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+          <style>{`
+            @keyframes flashTimer { 0%,100%{background:#ef4444;} 50%{background:#fb923c;} }
+            @keyframes bounceTimer { 0%,100%{transform:scale(1);} 50%{transform:scale(1.04);} }
+          `}</style>
+          <div style={{
+            background: finished ? "#ef4444" : "#fff",
+            borderRadius:28,padding:"28px 24px",width:"100%",maxWidth:320,
+            boxShadow:"0 20px 60px rgba(0,0,0,0.35)",
+            animation: finished ? "flashTimer 0.5s ease-in-out infinite, bounceTimer 0.5s ease-in-out infinite" : "none",
+            textAlign:"center",
+          }}>
+            {finished ? (
+              <>
+                <div style={{fontSize:52,marginBottom:10}}>🔥</div>
+                <p style={{color:"#fff",fontWeight:900,fontSize:24,margin:"0 0 6px"}}>Bora treinar!</p>
+                <p style={{color:"rgba(255,255,255,0.8)",fontWeight:600,fontSize:14,margin:0}}>Retomando em instantes...</p>
+              </>
+            ) : (
+              <>
+                <p style={{color:"#a855f7",fontWeight:800,fontSize:12,margin:"0 0 12px",letterSpacing:1,textTransform:"uppercase"}}>⏱ Descanso</p>
+                <div style={{color: isLow ? "#ef4444" : "#1a1a2e",fontWeight:900,fontSize:68,fontFamily:"monospace",lineHeight:1,marginBottom:18}}>
+                  {String(Math.floor(remaining/60)).padStart(2,"0")}:{String(remaining%60).padStart(2,"0")}
+                </div>
+                <div style={{background:"#f3e8ff",borderRadius:999,height:12,overflow:"hidden",marginBottom:22}}>
+                  <div style={{height:"100%",borderRadius:999,background: isLow ? "#ef4444" : "linear-gradient(90deg,#a855f7,#ec4899)",width:`${pct}%`,transition:"width 1s linear"}}/>
+                </div>
+                <div style={{display:"flex",gap:10,justifyContent:"center"}}>
+                  <button onClick={handleAdd30} style={{background:"#ede9fe",border:"none",color:"#7c3aed",borderRadius:12,padding:"10px 22px",fontSize:14,fontWeight:800,cursor:"pointer"}}>+30s</button>
+                  <button onClick={onSkip} style={{background:"#fce7f3",border:"none",color:"#be185d",borderRadius:12,padding:"10px 22px",fontSize:14,fontWeight:800,cursor:"pointer"}}>Pular</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── HISTORY MODAL ────────────────────────────────────────────────────────────
+
+    function HistoryModal({exerciseId, exerciseName, onClose}) {
+      const history = storageGet(historyKey(exerciseId), []);
+      const last5 = history.slice(-5).reverse();
+      return (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
+          <div style={{background:"#fff",borderRadius:24,padding:24,width:"100%",maxWidth:360,boxShadow:"0 20px 60px rgba(0,0,0,0.15)"}} onClick={e=>e.stopPropagation()}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+              <h3 style={{color:"#1a1a2e",fontWeight:800,fontSize:16,margin:0}}>📊 Histórico de Cargas</h3>
+              <button onClick={onClose} style={{background:"#f3f4f6",border:"none",color:"#6b7280",width:32,height:32,borderRadius:"50%",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+            </div>
+            <p style={{color:"#a855f7",fontSize:13,fontWeight:600,marginBottom:16,marginTop:0}}>{exerciseName}</p>
+            {last5.length===0
+              ? <p style={{color:"#9ca3af",textAlign:"center",fontSize:14,padding:"20px 0"}}>Nenhum registro ainda.</p>
+              : <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                  {last5.map((entry,i)=>(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",background:"#f9fafb",borderRadius:12,padding:"10px 14px"}}>
+                      <span style={{color:"#6b7280",fontSize:13}}>{entry.date}</span>
+                      <span style={{color:"#1a1a2e",fontWeight:800,fontSize:15}}>{entry.weight} kg</span>
+                    </div>
+                  ))}
+                </div>
+            }
+          </div>
+        </div>
+      );
+    }
+
+    // ─── EXERCISE CARD ────────────────────────────────────────────────────────────
+
+    function ExerciseCard({exercise, accentColor, completedSets, onToggleSeries, onRestStart, isSkipped, onSkip}) {
+      const [weight, setWeight] = React.useState(() => storageGet(weightKey(exercise.id), ""));
+      const [showHistory, setShowHistory] = React.useState(false);
+      const allDone = completedSets.length === exercise.sets;
+
+      const history = storageGet(historyKey(exercise.id), []);
+      const lastEntry = history.filter(e => e.date !== todayKey()).slice(-1)[0];
+      const lastWeight = lastEntry ? lastEntry.weight : null;
+
+      function saveWeight() {
+        if (!weight) return;
+        storageSet(weightKey(exercise.id), weight);
+        const h = storageGet(historyKey(exercise.id), []);
+        const filtered = h.filter(e => e.date !== todayKey());
+        storageSet(historyKey(exercise.id), [...filtered, {date: todayKey(), weight: Number(weight)}]);
+      }
+
+      function handleToggle(idx) {
+        onToggleSeries(exercise.id, idx);
+        if (!completedSets.includes(idx)) onRestStart();
+      }
+
+      if (isSkipped) {
+        return (
+          <div style={{
+            background:"#f9fafb",borderRadius:20,padding:"14px 16px",
+            border:"2px solid #e5e7eb",opacity:0.7,
+            display:"flex",alignItems:"center",justifyContent:"space-between",
+          }}>
+            <div>
+              <span style={{color:"#9ca3af",fontWeight:700,fontSize:15,textDecoration:"line-through"}}>{exercise.name}</span>
+              <div style={{color:"#d1d5db",fontSize:12,marginTop:2}}>Exercício pulado</div>
+            </div>
+            <button onClick={()=>onSkip(exercise.id, false)} style={{
+              background:"#f3f4f6",border:"none",color:"#6b7280",
+              borderRadius:12,padding:"6px 12px",fontSize:12,fontWeight:700,cursor:"pointer",
+            }}>↩ Desfazer</button>
+          </div>
+        );
+      }
+
+      return (
+        <>
+          <div style={{
+            background:"#fff",borderRadius:20,overflow:"hidden",
+            border: allDone ? `2px solid ${accentColor}` : "2px solid transparent",
+            boxShadow: allDone ? `0 8px 30px ${accentColor}33` : "0 4px 16px rgba(0,0,0,0.06)",
+            transition:"all 0.3s ease",
+          }}>
+            <div style={{height:6,background:allDone ? accentColor : `${accentColor}55`}}/>
+            <div style={{padding:"16px 16px 14px"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
+                <div style={{flex:1,paddingRight:8}}>
+                  <h3 style={{color:"#1a1a2e",fontWeight:800,fontSize:15,margin:"0 0 6px",lineHeight:1.3}}>{exercise.name}</h3>
+                  <span style={{background:`${accentColor}18`,color:accentColor,borderRadius:999,padding:"3px 12px",fontSize:12,fontWeight:800,display:"inline-block"}}>
+                    {exercise.sets} séries × {exercise.reps}
+                  </span>
+                </div>
+                {allDone
+                  ? <span style={{fontSize:28}}>✅</span>
+                  : <button onClick={()=>onSkip(exercise.id, true)} style={{
+                      background:"#fef9c3",border:"none",color:"#854d0e",
+                      borderRadius:12,padding:"6px 12px",fontSize:12,fontWeight:800,cursor:"pointer",
+                      whiteSpace:"nowrap",flexShrink:0,
+                    }}>⏭ Pular</button>
+                }
+              </div>
+
+              <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
+                {Array.from({length:exercise.sets},(_,i)=>{
+                  const done = completedSets.includes(i);
+                  return (
+                    <button key={i} onClick={()=>handleToggle(i)} style={{
+                      flex:"1 1 auto",minWidth:52,
+                      background: done ? accentColor : "#f3f4f6",
+                      border:"none",
+                      color: done ? "#fff" : "#6b7280",
+                      borderRadius:12,padding:"10px 4px",fontSize:13,fontWeight:800,
+                      cursor:"pointer",transition:"all 0.2s",
+                      boxShadow: done ? `0 4px 12px ${accentColor}55` : "none",
+                    }}>
+                      {done ? "✓" : "○"} S{i+1}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:8}}>
+                <input
+                  type="number" value={weight}
+                  onChange={e=>setWeight(e.target.value)}
+                  placeholder="Carga (kg)"
+                  style={{flex:1,background:"#f9fafb",border:"2px solid #e5e7eb",color:"#1a1a2e",borderRadius:12,padding:"10px 14px",fontSize:15,outline:"none",width:"100%"}}
+                />
+                <button onClick={saveWeight} style={{background:accentColor,border:"none",color:"#fff",borderRadius:12,padding:"10px 16px",fontWeight:800,fontSize:14,cursor:"pointer",whiteSpace:"nowrap",boxShadow:`0 4px 12px ${accentColor}44`}}>
+                  💾 Salvar
+                </button>
+              </div>
+
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <span style={{color:"#9ca3af",fontSize:12,fontWeight:500}}>
+                  {lastWeight ? `Última: ${lastWeight}kg` : "Sem registro anterior"}
+                </span>
+                <button onClick={()=>setShowHistory(true)} style={{background:"#f3f4f6",border:"none",color:"#6b7280",borderRadius:10,padding:"5px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                  📊 Histórico
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {showHistory && (
+            <HistoryModal exerciseId={exercise.id} exerciseName={exercise.name} onClose={()=>setShowHistory(false)} />
+          )}
+        </>
+      );
+    }
+
+    // ─── DAILY TRACKER ────────────────────────────────────────────────────────────
+
+    function DailyTracker({date, compact, workoutDone}) {
+      const d = date || todayKey();
+      const [workout, setWorkout] = React.useState(() => workoutDone || storageGet(workoutDoneKey(d), false));
+      const [water, setWater] = React.useState(() => storageGet(waterKey(d), false));
+      const [cardio, setCardio] = React.useState(() => storageGet(cardioKey(d), false));
+      const [cardioType, setCardioType] = React.useState(() => storageGet(cardioTypeKey(d), ""));
+      const [solar, setSolar] = React.useState(() => storageGet(solarKey(d), false));
+      const [bible, setBible] = React.useState(() => storageGet(bibleKey(d), false));
+      const [vitamins, setVitamins] = React.useState(() => storageGet(vitaminsKey(d), false));
+
+      React.useEffect(() => {
+        if (workoutDone) setWorkout(true);
+      }, [workoutDone]);
+
+      function toggleWorkout() { const n=!workout; setWorkout(n); storageSet(workoutDoneKey(d),n); }
+      function toggleWater() { const n=!water; setWater(n); storageSet(waterKey(d),n); }
+      function toggleCardio() {
+        const n=!cardio; setCardio(n); storageSet(cardioKey(d),n);
+        if (!n) { setCardioType(""); storageSet(cardioTypeKey(d),""); }
+      }
+      function selectCardioType(opt) { const n=cardioType===opt?"":opt; setCardioType(n); storageSet(cardioTypeKey(d),n); }
+      function toggleSolar() { const n=!solar; setSolar(n); storageSet(solarKey(d),n); }
+      function toggleBible() { const n=!bible; setBible(n); storageSet(bibleKey(d),n); }
+      function toggleVitamins() { const n=!vitamins; setVitamins(n); storageSet(vitaminsKey(d),n); }
+
+      const habits = [
+        {state:solar, toggle:toggleSolar, emoji:"☀️", label:"Luz solar", activeBg:"#fffbeb", activeBorder:"#f59e0b", activeText:"#92400e"},
+        {state:bible, toggle:toggleBible, emoji:"📖", label:"Bíblia", activeBg:"#ede9fe", activeBorder:"#a855f7", activeText:"#5b21b6"},
+        {state:vitamins, toggle:toggleVitamins, emoji:"💊", label:"Vitaminas", activeBg:"#f0fdf4", activeBorder:"#22c55e", activeText:"#166534"},
+      ];
+
+      if (compact) {
+        return (
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:6}}>
+            {workout && <span style={{background:"#faf5ff",color:"#7c3aed",borderRadius:999,padding:"2px 10px",fontSize:11,fontWeight:700}}>💪 Treino ✓</span>}
+            {water && <span style={{background:"#dbeafe",color:"#1d4ed8",borderRadius:999,padding:"2px 10px",fontSize:11,fontWeight:700}}>💧 Água ✓</span>}
+            {cardio && <span style={{background:"#dcfce7",color:"#15803d",borderRadius:999,padding:"2px 10px",fontSize:11,fontWeight:700}}>🏃 {cardioType || "Cardio"} ✓</span>}
+            {solar && <span style={{background:"#fffbeb",color:"#92400e",borderRadius:999,padding:"2px 10px",fontSize:11,fontWeight:700}}>☀️ Luz solar ✓</span>}
+            {bible && <span style={{background:"#ede9fe",color:"#5b21b6",borderRadius:999,padding:"2px 10px",fontSize:11,fontWeight:700}}>📖 Bíblia ✓</span>}
+            {vitamins && <span style={{background:"#f0fdf4",color:"#166534",borderRadius:999,padding:"2px 10px",fontSize:11,fontWeight:700}}>💊 Vitaminas ✓</span>}
+          </div>
+        );
+      }
+
+      return (
+        <div style={{background:"#fff",borderRadius:20,padding:16,boxShadow:"0 4px 16px rgba(0,0,0,0.06)",marginBottom:4}}>
+          <p style={{color:"#6b7280",fontWeight:800,fontSize:12,textTransform:"uppercase",letterSpacing:1,margin:"0 0 12px"}}>Metas do Dia</p>
+
+          {/* Treino - destaque principal */}
+          <button onClick={toggleWorkout} style={{
+            width:"100%",marginBottom:10,
+            background: workout ? "linear-gradient(135deg,#a855f720,#ec489920)" : "#f9fafb",
+            border:`2px solid ${workout ? "#a855f7" : "#e5e7eb"}`,
+            borderRadius:16,padding:"12px 16px",cursor:"pointer",
+            display:"flex",alignItems:"center",gap:12,transition:"all 0.2s",
+          }}>
+            <span style={{fontSize:26}}>💪</span>
+            <span style={{flex:1,fontWeight:800,fontSize:14,color: workout ? "#7c3aed" : "#9ca3af",textAlign:"left"}}>
+              {workout ? "Treino concluído! ✓" : "Treino do dia"}
+            </span>
+            {workout && <span style={{fontSize:20}}>🏆</span>}
+          </button>
+
+          <div style={{display:"flex",gap:10,marginBottom:12}}>
+            <button onClick={toggleWater} style={{
+              flex:1,background: water ? "#eff6ff" : "#f9fafb",
+              border:`2px solid ${water ? "#3b82f6" : "#e5e7eb"}`,
+              borderRadius:16,padding:"14px 8px",cursor:"pointer",
+              display:"flex",flexDirection:"column",alignItems:"center",gap:4,transition:"all 0.2s",
+            }}>
+              <span style={{fontSize:26}}>💧</span>
+              <span style={{fontSize:11,fontWeight:800,color: water ? "#1d4ed8" : "#9ca3af",textAlign:"center"}}>
+                {water ? "Meta batida! ✓" : "Meta de água"}
+              </span>
+            </button>
+            <button onClick={toggleCardio} style={{
+              flex:1,background: cardio ? "#f0fdf4" : "#f9fafb",
+              border:`2px solid ${cardio ? "#22c55e" : "#e5e7eb"}`,
+              borderRadius:16,padding:"14px 8px",cursor:"pointer",
+              display:"flex",flexDirection:"column",alignItems:"center",gap:4,transition:"all 0.2s",
+            }}>
+              <span style={{fontSize:26}}>🏃</span>
+              <span style={{fontSize:11,fontWeight:800,color: cardio ? "#15803d" : "#9ca3af",textAlign:"center"}}>
+                {cardio ? "Cardio feito! ✓" : "Fiz cardio"}
+              </span>
+            </button>
+          </div>
+          {cardio && (
+            <div style={{marginBottom:12}}>
+              <p style={{color:"#6b7280",fontSize:12,fontWeight:700,margin:"0 0 8px"}}>Qual cardio você fez?</p>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {CARDIO_OPTIONS.map(opt => (
+                  <button key={opt} onClick={()=>selectCardioType(opt)} style={{
+                    background: cardioType === opt ? "#a855f7" : "#f3f4f6",
+                    color: cardioType === opt ? "#fff" : "#4b5563",
+                    border:"none",borderRadius:999,padding:"7px 14px",
+                    fontSize:12,fontWeight:700,cursor:"pointer",transition:"all 0.2s",
+                    boxShadow: cardioType === opt ? "0 4px 12px rgba(168,85,247,0.4)" : "none",
+                  }}>{opt}</button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div style={{borderTop:"1px solid #f3f4f6",paddingTop:12}}>
+            <p style={{color:"#6b7280",fontWeight:800,fontSize:12,textTransform:"uppercase",letterSpacing:1,margin:"0 0 10px"}}>Hábitos</p>
+            <div style={{display:"flex",gap:8}}>
+              {habits.map(h => (
+                <button key={h.label} onClick={h.toggle} style={{
+                  flex:1,background: h.state ? h.activeBg : "#f9fafb",
+                  border:`2px solid ${h.state ? h.activeBorder : "#e5e7eb"}`,
+                  borderRadius:14,padding:"12px 6px",cursor:"pointer",
+                  display:"flex",flexDirection:"column",alignItems:"center",gap:3,transition:"all 0.2s",
+                }}>
+                  <span style={{fontSize:22}}>{h.emoji}</span>
+                  <span style={{fontSize:10,fontWeight:800,color: h.state ? h.activeText : "#9ca3af",textAlign:"center",lineHeight:1.3}}>
+                    {h.state ? "✓ " : ""}{h.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── MONTH CALENDAR ───────────────────────────────────────────────────────────
+
+    function MonthCalendar() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const todayDate = today.getDate();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDayOfMonth = new Date(year, month, 1).getDay();
+      const monthName = today.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+
+      const completedDays = new Set();
+      const waterDays = new Set();
+      const cardioDays = new Set();
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        if (storageGet(workoutDoneKey(dateStr), false)) completedDays.add(d);
+        if (storageGet(waterKey(dateStr), false)) waterDays.add(d);
+        if (storageGet(cardioKey(dateStr), false)) cardioDays.add(d);
+      }
+
+      const dayNames = ["D","S","T","Q","Q","S","S"];
+
+      return (
+        <div style={{background:"#fff",borderRadius:24,padding:"18px 16px 14px",marginBottom:16,boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+            <h2 style={{color:"#1a1a2e",fontWeight:900,fontSize:16,margin:0,textTransform:"capitalize"}}>
+              📅 {monthName}
+            </h2>
+            <span style={{fontSize:12,color:"#6b7280",fontWeight:600}}>{completedDays.size} treinos</span>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:6}}>
+            {dayNames.map((d,i)=>(
+              <div key={i} style={{textAlign:"center",color:"#9ca3af",fontSize:11,fontWeight:800,padding:"2px 0"}}>{d}</div>
+            ))}
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2}}>
+            {Array.from({length:firstDayOfMonth},(_,i)=>(<div key={`e-${i}`}/>))}
+            {Array.from({length:daysInMonth},(_,i)=>{
+              const day = i + 1;
+              const isToday = day === todayDate;
+              const isDone = completedDays.has(day);
+              const hasWater = waterDays.has(day);
+              const hasCardio = cardioDays.has(day);
+              const isPast = day < todayDate;
+              return (
+                <div key={day} style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"5px 2px",background: isToday ? "#f3e8ff" : "transparent",borderRadius:10,minHeight:44}}>
+                  <span style={{color: isToday ? "#7c3aed" : isPast ? "#4b5563" : "#9ca3af",fontWeight: isToday ? 900 : 600,fontSize:13,lineHeight:1}}>{day}</span>
+                  <div style={{display:"flex",gap:2,marginTop:3,height:7}}>
+                    {isDone && <div style={{width:6,height:6,borderRadius:"50%",background:"#84cc16"}}/>}
+                    {hasWater && <div style={{width:6,height:6,borderRadius:"50%",background:"#3b82f6"}}/>}
+                    {hasCardio && <div style={{width:6,height:6,borderRadius:"50%",background:"#f97316"}}/>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{display:"flex",gap:12,marginTop:12,paddingTop:10,borderTop:"1px solid #f3f4f6"}}>
+            <div style={{display:"flex",alignItems:"center",gap:4}}>
+              <div style={{width:8,height:8,borderRadius:"50%",background:"#84cc16"}}/>
+              <span style={{fontSize:10,color:"#6b7280",fontWeight:600}}>Treino</span>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:4}}>
+              <div style={{width:8,height:8,borderRadius:"50%",background:"#3b82f6"}}/>
+              <span style={{fontSize:10,color:"#6b7280",fontWeight:600}}>Água</span>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:4}}>
+              <div style={{width:8,height:8,borderRadius:"50%",background:"#f97316"}}/>
+              <span style={{fontSize:10,color:"#6b7280",fontWeight:600}}>Cardio</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── WEEK HISTORY MODAL ───────────────────────────────────────────────────────
+
+    function WeekHistoryModal({onClose}) {
+      const [weekOffset, setWeekOffset] = React.useState(0);
+
+      function getWeekDates(offset) {
+        const now = new Date();
+        const day = now.getDay();
+        const monday = new Date(now);
+        monday.setDate(now.getDate() - ((day + 6) % 7) + offset * 7);
+        return Array.from({length:7}, (_, i) => {
+          const d = new Date(monday);
+          d.setDate(monday.getDate() + i);
+          return d.toISOString().slice(0, 10);
+        });
+      }
+
+      const weekDates = getWeekDates(weekOffset);
+      const weekStart = weekDates[0];
+      const weekEnd = weekDates[6];
+
+      function formatDate(str) {
+        return new Date(str + "T12:00:00").toLocaleDateString("pt-BR", {day:"2-digit", month:"2-digit"});
+      }
+
+      const weekLabel = weekOffset === 0 ? "Esta semana"
+        : weekOffset === -1 ? "Semana passada"
+        : `${formatDate(weekStart)} – ${formatDate(weekEnd)}`;
+
+      const days = weekDates.map(date => {
+        const done = storageGet(workoutDoneKey(date), false);
+        const label = storageGet(workoutLabelKey(date), null);
+        const skippedList = storageGet(skippedKey(date), []);
+        const completed = storageGet(completedKey(date), {});
+        const water = storageGet(waterKey(date), false);
+        const cardio = storageGet(cardioKey(date), false);
+        const cardioType = storageGet(cardioTypeKey(date), "");
+        const solar = storageGet(solarKey(date), false);
+        const bible = storageGet(bibleKey(date), false);
+        const vitamins = storageGet(vitaminsKey(date), false);
+
+        const exercisesSummary = [];
+        WORKOUTS.forEach(w => {
+          w.exercises.forEach(ex => {
+            const sets = completed[ex.id] || [];
+            const wasSkipped = skippedList.includes(ex.id);
+            const w2 = storageGet(weightKey(ex.id, date), null);
+            if (sets.length > 0 || wasSkipped) {
+              exercisesSummary.push({name: ex.name, sets: sets.length, totalSets: ex.sets, skipped: wasSkipped, weight: w2});
+            }
+          });
+        });
+
+        return {date, done, label, exercisesSummary, water, cardio, cardioType, solar, bible, vitamins};
+      }).filter(d => d.done || d.exercisesSummary.length > 0 || d.water || d.cardio || d.solar || d.bible || d.vitamins);
+
+      return (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={onClose}>
+          <div style={{background:"#f0edf8",borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,maxHeight:"85vh",overflowY:"auto",paddingBottom:40}} onClick={e=>e.stopPropagation()}>
+            <div style={{position:"sticky",top:0,background:"#fff",padding:"20px 20px 14px",borderBottom:"1px solid #f3f4f6",zIndex:1}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+                <h2 style={{color:"#1a1a2e",fontWeight:900,fontSize:18,margin:0}}>📅 Histórico Semanal</h2>
+                <button onClick={onClose} style={{background:"#f3f4f6",border:"none",color:"#6b7280",width:32,height:32,borderRadius:"50%",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:12,justifyContent:"center"}}>
+                <button onClick={()=>setWeekOffset(w=>w-1)} style={{background:"#ede9fe",border:"none",color:"#7c3aed",borderRadius:10,padding:"6px 14px",fontWeight:800,cursor:"pointer"}}>‹ Anterior</button>
+                <span style={{color:"#4b5563",fontWeight:700,fontSize:14,minWidth:140,textAlign:"center"}}>{weekLabel}</span>
+                <button onClick={()=>setWeekOffset(w=>Math.min(0,w+1))} disabled={weekOffset===0} style={{background:weekOffset===0?"#f3f4f6":"#ede9fe",border:"none",color:weekOffset===0?"#d1d5db":"#7c3aed",borderRadius:10,padding:"6px 14px",fontWeight:800,cursor:weekOffset===0?"default":"pointer"}}>Próx ›</button>
+              </div>
+            </div>
+
+            <div style={{padding:"16px"}}>
+              {days.length === 0 ? (
+                <div style={{textAlign:"center",padding:"40px 20px",color:"#9ca3af",fontWeight:600}}>
+                  Nenhum dado registrado nessa semana.
+                </div>
+              ) : (
+                <div style={{display:"flex",flexDirection:"column",gap:12}}>
+                  {days.map(d => (
+                    <div key={d.date} style={{background:"#fff",borderRadius:20,padding:"16px",boxShadow:"0 2px 12px rgba(0,0,0,0.05)"}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10,flexWrap:"wrap",gap:6}}>
+                        <div>
+                          <span style={{color:"#1a1a2e",fontWeight:800,fontSize:15}}>{formatDate(d.date)}</span>
+                          {d.label && <span style={{color:"#a855f7",fontWeight:700,fontSize:13,marginLeft:8}}>{d.label}</span>}
+                        </div>
+                        <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
+                          {d.water && <span style={{background:"#dbeafe",color:"#1d4ed8",borderRadius:999,padding:"2px 8px",fontSize:11,fontWeight:700}}>💧</span>}
+                          {d.cardio && <span style={{background:"#dcfce7",color:"#15803d",borderRadius:999,padding:"2px 8px",fontSize:11,fontWeight:700}}>🏃 {d.cardioType}</span>}
+                          {d.solar && <span style={{background:"#fffbeb",color:"#92400e",borderRadius:999,padding:"2px 8px",fontSize:11,fontWeight:700}}>☀️</span>}
+                          {d.bible && <span style={{background:"#ede9fe",color:"#5b21b6",borderRadius:999,padding:"2px 8px",fontSize:11,fontWeight:700}}>📖</span>}
+                          {d.vitamins && <span style={{background:"#f0fdf4",color:"#166534",borderRadius:999,padding:"2px 8px",fontSize:11,fontWeight:700}}>💊</span>}
+                          {d.done && <span style={{background:"#f0fdf4",color:"#15803d",borderRadius:999,padding:"2px 8px",fontSize:11,fontWeight:700}}>✅ Completo</span>}
+                        </div>
+                      </div>
+                      {d.exercisesSummary.length > 0 && (
+                        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                          {d.exercisesSummary.map((ex,i) => (
+                            <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background: ex.skipped ? "#f9fafb" : "#faf5ff",borderRadius:10,padding:"8px 12px"}}>
+                              <span style={{color: ex.skipped ? "#9ca3af" : "#4b5563",fontSize:13,fontWeight:600,textDecoration: ex.skipped ? "line-through" : "none",flex:1,paddingRight:8}}>{ex.name}</span>
+                              <div style={{display:"flex",gap:6,alignItems:"center",flexShrink:0}}>
+                                {ex.skipped
+                                  ? <span style={{color:"#d1d5db",fontSize:12}}>pulado</span>
+                                  : <span style={{color:"#a855f7",fontWeight:700,fontSize:12}}>{ex.sets}/{ex.totalSets} séries</span>
+                                }
+                                {ex.weight && !ex.skipped && <span style={{color:"#6b7280",fontSize:12,fontWeight:600}}>{ex.weight}kg</span>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── DAY VIEW ────────────────────────────────────────────────────────────────
+
+    function EditExerciseCard({exercise, accentColor, onUpdate, onDelete}) {
+      return (
+        <div style={{background:"#fff",borderRadius:20,padding:"14px 16px",border:"2px dashed #e5e7eb"}}>
+          <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:10}}>
+            <input
+              value={exercise.name}
+              onChange={e => onUpdate(exercise.id, 'name', e.target.value)}
+              style={{flex:1,background:"#f9fafb",border:`2px solid ${accentColor}44`,borderRadius:10,padding:"8px 12px",fontSize:14,fontWeight:700,color:"#1a1a2e",outline:"none"}}
+            />
+            <button onClick={() => onDelete(exercise.id)} style={{background:"#fef2f2",border:"none",color:"#ef4444",borderRadius:10,padding:"8px 12px",cursor:"pointer",fontSize:13,fontWeight:800,flexShrink:0}}>
+              🗑
+            </button>
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <label style={{flex:1,display:"flex",flexDirection:"column",gap:4}}>
+              <span style={{fontSize:10,color:"#9ca3af",fontWeight:800,letterSpacing:0.5}}>SÉRIES</span>
+              <input
+                type="number" min="1"
+                value={exercise.sets}
+                onChange={e => onUpdate(exercise.id, 'sets', Number(e.target.value) || 1)}
+                style={{background:"#f9fafb",border:"2px solid #e5e7eb",borderRadius:10,padding:"8px 12px",fontSize:14,fontWeight:700,color:"#1a1a2e",outline:"none",width:"100%"}}
+              />
+            </label>
+            <label style={{flex:2,display:"flex",flexDirection:"column",gap:4}}>
+              <span style={{fontSize:10,color:"#9ca3af",fontWeight:800,letterSpacing:0.5}}>REPS / TEMPO</span>
+              <input
+                value={exercise.reps}
+                onChange={e => onUpdate(exercise.id, 'reps', e.target.value)}
+                style={{background:"#f9fafb",border:"2px solid #e5e7eb",borderRadius:10,padding:"8px 12px",fontSize:14,fontWeight:700,color:"#1a1a2e",outline:"none",width:"100%"}}
+              />
+            </label>
+          </div>
+        </div>
+      );
+    }
+
+    function DayView({dayIndex, onBack}) {
+      const baseWorkout = WORKOUTS[dayIndex];
+      const [exercises, setExercises] = React.useState(() => {
+        const custom = storageGet('custom_workouts', {});
+        return custom[dayIndex] ? custom[dayIndex] : baseWorkout.exercises;
+      });
+      const [isCustomized, setIsCustomized] = React.useState(() => {
+        const custom = storageGet('custom_workouts', {});
+        return !!custom[dayIndex];
+      });
+      const [editMode, setEditMode] = React.useState(false);
+      const [restCompleted, setRestCompleted] = React.useState(() => storageGet(workoutDoneKey(todayKey()), false));
+      const [completedSets, setCompletedSets] = React.useState(() => storageGet(completedKey(), {}));
+      const [skipped, setSkipped] = React.useState(() => storageGet(skippedKey(), []));
+      const [restActive, setRestActive] = React.useState(false);
+      const [restKey, setRestKey] = React.useState(0);
+      const [showCongrats, setShowCongrats] = React.useState(false);
+
+      const workout = {...baseWorkout, exercises};
+      const totalEx = exercises.length;
+      const doneCount = exercises.filter(ex => {
+        const sets = completedSets[ex.id] || [];
+        return sets.length === ex.sets || skipped.includes(ex.id);
+      }).length;
+      const progressPct = totalEx > 0 ? (doneCount / totalEx) * 100 : 0;
+
+      React.useEffect(() => {
+        if (totalEx > 0 && doneCount === totalEx && !showCongrats) {
+          setShowCongrats(true);
+          storageSet(workoutDoneKey(todayKey()), true);
+          storageSet(workoutLabelKey(todayKey()), workout.label);
+        }
+      }, [doneCount, totalEx]);
+
+      function saveCustom(exs) {
+        const custom = storageGet('custom_workouts', {});
+        custom[dayIndex] = exs;
+        storageSet('custom_workouts', custom);
+        setIsCustomized(true);
+      }
+
+      function updateExercise(id, field, value) {
+        const updated = exercises.map(ex => ex.id === id ? {...ex, [field]: value} : ex);
+        setExercises(updated);
+        saveCustom(updated);
+      }
+
+      function deleteExercise(id) {
+        const updated = exercises.filter(ex => ex.id !== id);
+        setExercises(updated);
+        saveCustom(updated);
+      }
+
+      function addExercise() {
+        const newEx = {id:`custom_${dayIndex}_${Date.now()}`, name:"Novo exercício", sets:3, reps:"12"};
+        const updated = [...exercises, newEx];
+        setExercises(updated);
+        saveCustom(updated);
+      }
+
+      function restoreDefault() {
+        if (!window.confirm("Restaurar lista original de exercícios?")) return;
+        const custom = storageGet('custom_workouts', {});
+        delete custom[dayIndex];
+        storageSet('custom_workouts', custom);
+        setExercises(baseWorkout.exercises);
+        setIsCustomized(false);
+        setEditMode(false);
+      }
+
+      function toggleSeries(exerciseId, setIdx) {
+        setCompletedSets(prev => {
+          const current = prev[exerciseId] || [];
+          const next = current.includes(setIdx) ? current.filter(s=>s!==setIdx) : [...current, setIdx];
+          const updated = {...prev, [exerciseId]: next};
+          storageSet(completedKey(), updated);
+          return updated;
+        });
+      }
+
+      function handleSkip(exerciseId, skip) {
+        setSkipped(prev => {
+          const next = skip
+            ? [...prev.filter(id=>id!==exerciseId), exerciseId]
+            : prev.filter(id=>id!==exerciseId);
+          storageSet(skippedKey(), next);
+          return next;
+        });
+      }
+
+      function handleClearAll() {
+        if (!window.confirm("Apagar todo o progresso de hoje?")) return;
+        storageSet(completedKey(), {});
+        storageSet(skippedKey(), []);
+        storageSet(workoutDoneKey(todayKey()), false);
+        setCompletedSets({});
+        setSkipped([]);
+        setShowCongrats(false);
+      }
+
+      function handleRestDone() {
+        setRestCompleted(true);
+        storageSet(workoutDoneKey(todayKey()), true);
+        storageSet(workoutLabelKey(todayKey()), workout.label);
+      }
+
+      function handleRestStart() {
+        setRestKey(k => k + 1);
+        setRestActive(true);
+      }
+
+      const ac = workout.color;
+
+      return (
+        <div style={{minHeight:"100vh",background:"#f0edf8",paddingBottom:40}}>
+          {restActive && (
+            <RestTimer key={restKey} initialSeconds={60} onSkip={()=>setRestActive(false)} onDone={()=>setRestActive(false)} />
+          )}
+
+          {/* Header */}
+          <div style={{background:"#fff",padding:"20px 16px 16px",borderBottom:"1px solid #f3f4f6",boxShadow:"0 2px 12px rgba(0,0,0,0.05)"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+              <button onClick={onBack} style={{background:"#f3f4f6",border:"none",color:"#6b7280",fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",gap:6,borderRadius:10,padding:"6px 12px",fontWeight:700}}>
+                ← Voltar
+              </button>
+              <div style={{display:"flex",gap:8}}>
+                {!workout.rest && (
+                  <button onClick={()=>setEditMode(e=>!e)} style={{
+                    background: editMode ? ac : "#f3f4f6",
+                    border:"none",color: editMode ? "#fff" : "#6b7280",
+                    borderRadius:10,padding:"6px 14px",fontSize:12,fontWeight:800,cursor:"pointer",
+                  }}>
+                    {editMode ? "✓ Concluir" : "✏️ Editar"}
+                  </button>
+                )}
+                {totalEx > 0 && !editMode && (
+                  <button onClick={handleClearAll} style={{background:"#fef2f2",border:"none",color:"#ef4444",borderRadius:10,padding:"6px 14px",fontSize:12,fontWeight:800,cursor:"pointer"}}>
+                    🗑 Limpar
+                  </button>
+                )}
+              </div>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom: totalEx > 0 && !editMode ? 14 : 0}}>
+              <div style={{width:54,height:54,borderRadius:18,background:`${ac}20`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28}}>
+                {workout.emoji}
+              </div>
+              <div style={{flex:1}}>
+                <h1 style={{color:"#1a1a2e",fontWeight:900,fontSize:22,margin:0}}>{workout.label}</h1>
+                {workout.subtitle && <span style={{color:ac,fontWeight:700,fontSize:14}}>{workout.subtitle}</span>}
+              </div>
+            </div>
+            {totalEx > 0 && !editMode && (
+              <div>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+                  <span style={{color:"#9ca3af",fontSize:13,fontWeight:600}}>Progresso do treino</span>
+                  <span style={{color:ac,fontWeight:800,fontSize:13}}>{doneCount}/{totalEx} exercícios</span>
+                </div>
+                <div style={{background:"#f3f4f6",borderRadius:999,height:10,overflow:"hidden"}}>
+                  <div style={{height:"100%",borderRadius:999,background:`linear-gradient(90deg,${ac},${ac}bb)`,width:`${progressPct}%`,transition:"width 0.5s ease"}}/>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Daily Tracker */}
+          <div style={{padding:"16px 16px 0"}}>
+            <DailyTracker date={todayKey()} workoutDone={showCongrats || restCompleted} />
+          </div>
+
+          {/* Content */}
+          <div style={{padding:"12px 16px",display:"flex",flexDirection:"column",gap:12}}>
+            {workout.rest ? (
+              <div style={{background:"#fff",borderRadius:24,padding:32,textAlign:"center",boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
+                <div style={{width:80,height:80,borderRadius:999,background:`${ac}20`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:44,margin:"0 auto 16px"}}>
+                  {workout.emoji}
+                </div>
+                <p style={{color:"#4b5563",fontSize:16,lineHeight:1.7,margin:"0 0 24px",fontWeight:500}}>{workout.info}</p>
+                {restCompleted ? (
+                  <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"#f0fdf4",border:"2px solid #22c55e",borderRadius:16,padding:"12px 24px"}}>
+                    <span style={{fontSize:22}}>✅</span>
+                    <span style={{color:"#15803d",fontWeight:800,fontSize:15}}>Descanso concluído!</span>
+                  </div>
+                ) : (
+                  <button onClick={handleRestDone} style={{background:`linear-gradient(135deg,${ac},${ac}cc)`,border:"none",color:"#fff",borderRadius:16,padding:"14px 32px",fontWeight:900,fontSize:16,cursor:"pointer",boxShadow:`0 8px 24px ${ac}44`}}>
+                    😴 Marcar como descansado
+                  </button>
+                )}
+              </div>
+            ) : editMode ? (
+              <>
+                {isCustomized && (
+                  <button onClick={restoreDefault} style={{background:"#fef9c3",border:"none",color:"#854d0e",borderRadius:12,padding:"10px 16px",fontSize:13,fontWeight:700,cursor:"pointer",textAlign:"left"}}>
+                    ↩ Restaurar lista original
+                  </button>
+                )}
+                {exercises.map(ex => (
+                  <EditExerciseCard
+                    key={ex.id}
+                    exercise={ex}
+                    accentColor={ac}
+                    onUpdate={updateExercise}
+                    onDelete={deleteExercise}
+                  />
+                ))}
+                <button onClick={addExercise} style={{background:`${ac}18`,border:`2px dashed ${ac}`,color:ac,borderRadius:20,padding:"14px",fontSize:14,fontWeight:800,cursor:"pointer",textAlign:"center"}}>
+                  + Adicionar exercício
+                </button>
+              </>
+            ) : (
+              exercises.map(ex => (
+                <ExerciseCard
+                  key={ex.id}
+                  exercise={ex}
+                  accentColor={ac}
+                  completedSets={completedSets[ex.id] || []}
+                  onToggleSeries={toggleSeries}
+                  onRestStart={handleRestStart}
+                  isSkipped={skipped.includes(ex.id)}
+                  onSkip={handleSkip}
+                />
+              ))
+            )}
+          </div>
+
+          {/* Congrats */}
+          {showCongrats && (
+            <>
+              <Confetti/>
+              <div style={{position:"fixed",inset:0,background:"rgba(255,255,255,0.96)",zIndex:300,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:32,textAlign:"center"}}>
+                <div style={{width:100,height:100,borderRadius:999,background:`${ac}20`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:56,marginBottom:16}}>
+                  🏆
+                </div>
+                <h2 style={{color:"#1a1a2e",fontWeight:900,fontSize:28,marginTop:0,marginBottom:8}}>Treino Completo!</h2>
+                <p style={{color:"#6b7280",fontSize:16,margin:0,lineHeight:1.6}}>Você arrasou hoje!<br/>{workout.label}{workout.subtitle ? ` — ${workout.subtitle}` : ""} ✅</p>
+                <button onClick={()=>setShowCongrats(false)} style={{marginTop:32,background:ac,border:"none",color:"#fff",borderRadius:16,padding:"16px 40px",fontWeight:900,fontSize:17,cursor:"pointer",boxShadow:`0 8px 24px ${ac}55`}}>
+                  Ver resumo 💪
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      );
+    }
+
+    // ─── MONTHLY PERFORMANCE MODAL ───────────────────────────────────────────────
+
+    function MonthlyPerformanceModal({onClose}) {
+      const [monthOffset, setMonthOffset] = React.useState(0);
+      const today = new Date();
+      const targetDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
+      const year = targetDate.getFullYear();
+      const month = targetDate.getMonth();
+      const isCurrentMonth = monthOffset === 0;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysPassed = isCurrentMonth ? today.getDate() : daysInMonth;
+      const monthName = targetDate.toLocaleDateString("pt-BR", {month:"long", year:"numeric"});
+
+      const goals = [
+        {key:"treino",   label:"Treino",    emoji:"💪", color:"#a855f7", checker: d => storageGet(workoutDoneKey(d), false)},
+        {key:"agua",     label:"Água",      emoji:"💧", color:"#3b82f6", checker: d => storageGet(waterKey(d), false)},
+        {key:"cardio",   label:"Cardio",    emoji:"🏃", color:"#22c55e", checker: d => storageGet(cardioKey(d), false)},
+        {key:"solar",    label:"Luz solar", emoji:"☀️", color:"#f59e0b", checker: d => storageGet(solarKey(d), false)},
+        {key:"biblia",   label:"Bíblia",    emoji:"📖", color:"#8b5cf6", checker: d => storageGet(bibleKey(d), false)},
+        {key:"vitaminas",label:"Vitaminas", emoji:"💊", color:"#10b981", checker: d => storageGet(vitaminsKey(d), false)},
+      ];
+
+      const stats = goals.map(g => {
+        let count = 0;
+        for (let day = 1; day <= daysPassed; day++) {
+          const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+          if (g.checker(dateStr)) count++;
+        }
+        const pct = daysPassed > 0 ? Math.round((count / daysPassed) * 100) : 0;
+        return {...g, count, total: daysPassed, pct};
+      });
+
+      const totalScore = Math.round(stats.reduce((acc, s) => acc + s.pct, 0) / stats.length);
+      const scoreColor = totalScore >= 80 ? "#22c55e" : totalScore >= 50 ? "#f59e0b" : "#ef4444";
+      const scoreEmoji = totalScore >= 80 ? "🏆" : totalScore >= 50 ? "💪" : "🔥";
+
+      return (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={onClose}>
+          <div style={{background:"#f0edf8",borderRadius:"24px 24px 0 0",width:"100%",maxWidth:480,maxHeight:"85vh",overflowY:"auto",paddingBottom:40}} onClick={e=>e.stopPropagation()}>
+            <div style={{position:"sticky",top:0,background:"#fff",padding:"20px 20px 16px",borderBottom:"1px solid #f3f4f6",zIndex:1}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                <h2 style={{color:"#1a1a2e",fontWeight:900,fontSize:18,margin:0}}>📊 Desempenho do Mês</h2>
+                <button onClick={onClose} style={{background:"#f3f4f6",border:"none",color:"#6b7280",width:32,height:32,borderRadius:"50%",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+              </div>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:8}}>
+              <button onClick={()=>setMonthOffset(o=>o-1)} style={{background:"#ede9fe",border:"none",color:"#7c3aed",borderRadius:10,padding:"6px 14px",fontWeight:800,cursor:"pointer",fontSize:13}}>‹</button>
+              <p style={{color:"#9ca3af",fontSize:13,fontWeight:600,margin:0,textTransform:"capitalize"}}>{monthName} · {daysPassed} dias</p>
+              <button onClick={()=>setMonthOffset(o=>Math.min(0,o+1))} disabled={monthOffset===0} style={{background:monthOffset===0?"#f3f4f6":"#ede9fe",border:"none",color:monthOffset===0?"#d1d5db":"#7c3aed",borderRadius:10,padding:"6px 14px",fontWeight:800,cursor:monthOffset===0?"default":"pointer",fontSize:13}}>›</button>
+            </div>
+              <div style={{background:"linear-gradient(135deg,#a855f7,#ec4899)",borderRadius:16,padding:"14px 18px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <div>
+                  <p style={{color:"rgba(255,255,255,0.8)",fontSize:12,fontWeight:700,margin:"0 0 2px"}}>Pontuação geral</p>
+                  <p style={{color:"#fff",fontSize:32,fontWeight:900,margin:0,lineHeight:1}}>{totalScore}%</p>
+                </div>
+                <span style={{fontSize:44}}>{scoreEmoji}</span>
+              </div>
+            </div>
+
+            <div style={{padding:"16px"}}>
+              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                {stats.map(s => (
+                  <div key={s.key} style={{background:"#fff",borderRadius:20,padding:"14px 16px",boxShadow:"0 2px 12px rgba(0,0,0,0.05)"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                      <div style={{display:"flex",alignItems:"center",gap:10}}>
+                        <span style={{fontSize:22}}>{s.emoji}</span>
+                        <span style={{color:"#1a1a2e",fontWeight:800,fontSize:15}}>{s.label}</span>
+                      </div>
+                      <div style={{textAlign:"right"}}>
+                        <span style={{color: s.pct>=80?"#22c55e":s.pct>=50?"#f59e0b":"#ef4444",fontWeight:900,fontSize:18}}>{s.count}</span>
+                        <span style={{color:"#9ca3af",fontWeight:600,fontSize:13}}>/{s.total} dias</span>
+                      </div>
+                    </div>
+                    <div style={{background:"#f3f4f6",borderRadius:999,height:8,overflow:"hidden",marginBottom:4}}>
+                      <div style={{height:"100%",borderRadius:999,background:s.color,width:`${s.pct}%`,transition:"width 0.6s ease"}}/>
+                    </div>
+                    <div style={{display:"flex",justifyContent:"flex-end"}}>
+                      <span style={{color: s.pct>=80?"#22c55e":s.pct>=50?"#f59e0b":"#ef4444",fontSize:11,fontWeight:700}}>{s.pct}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── HOME ────────────────────────────────────────────────────────────────────
+
+    function Home({onSelectDay}) {
+      const todayStr = todayKey();
+      const [showHistory, setShowHistory] = React.useState(false);
+      const [showMonthly, setShowMonthly] = React.useState(false);
+
+      return (
+        <div style={{minHeight:"100vh",background:"#f0edf8",paddingBottom:40}}>
+          {/* Header */}
+          <div style={{background:"#fff",padding:"40px 20px 24px",textAlign:"center",boxShadow:"0 2px 16px rgba(0,0,0,0.05)"}}>
+            <div style={{width:64,height:64,borderRadius:22,background:"linear-gradient(135deg,#a855f7,#ec4899)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,margin:"0 auto 12px",boxShadow:"0 8px 24px rgba(168,85,247,0.4)"}}>
+              💪
+            </div>
+            <h1 style={{color:"#1a1a2e",fontWeight:900,fontSize:26,margin:"0 0 4px"}}>Meu Treino</h1>
+            <p style={{color:"#9ca3af",marginTop:0,fontSize:14,fontWeight:500,marginBottom:12,textTransform:"capitalize"}}>
+              {new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"})}
+            </p>
+            <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
+              <button onClick={()=>setShowHistory(true)} style={{background:"#ede9fe",border:"none",color:"#7c3aed",borderRadius:12,padding:"8px 20px",fontWeight:800,fontSize:13,cursor:"pointer"}}>
+                📅 Histórico semanal
+              </button>
+              <button onClick={()=>setShowMonthly(true)} style={{background:"#fdf4ff",border:"none",color:"#a855f7",borderRadius:12,padding:"8px 20px",fontWeight:800,fontSize:13,cursor:"pointer"}}>
+                📊 Desempenho do mês
+              </button>
+            </div>
+          </div>
+
+          <div style={{padding:"20px 16px"}}>
+            <MonthCalendar />
+
+            <div style={{marginBottom:16}}>
+              <p style={{color:"#9ca3af",fontWeight:800,fontSize:11,textTransform:"uppercase",letterSpacing:1,margin:"0 0 8px 4px"}}>Hoje</p>
+              <DailyTracker date={todayStr} />
+            </div>
+
+            <p style={{color:"#9ca3af",fontWeight:800,fontSize:11,textTransform:"uppercase",letterSpacing:1,margin:"0 0 8px 4px"}}>Treinos</p>
+            <div style={{display:"flex",flexDirection:"column",gap:12}}>
+              {(() => {
+                const thisWeekDates = getThisWeekDates();
+                const skippedToday = storageGet(skippedKey(), []);
+                return WORKOUTS.map((w, idx) => {
+                  const totalEx = w.exercises.length;
+                  const completed = storageGet(completedKey(), {});
+                  const doneEx = w.exercises.filter(ex =>
+                    (completed[ex.id]||[]).length === ex.sets || skippedToday.includes(ex.id)
+                  ).length;
+                  const doneThisWeek = !w.rest && thisWeekDates.some(date =>
+                    storageGet(workoutDoneKey(date), false) &&
+                    storageGet(workoutLabelKey(date), null) === w.label
+                  );
+
+                  return (
+                    <button key={idx} onClick={()=>onSelectDay(idx)} style={{
+                      display:"flex",alignItems:"center",gap:14,
+                      background:"#fff",border:`2px solid ${doneThisWeek ? w.color+"44" : "transparent"}`,
+                      borderRadius:20,padding:"14px 16px",cursor:"pointer",textAlign:"left",
+                      boxShadow:"0 2px 12px rgba(0,0,0,0.05)",
+                      transition:"all 0.2s",width:"100%",
+                    }}>
+                      <div style={{width:48,height:48,borderRadius:16,background:`${w.color}20`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>
+                        {w.emoji}
+                      </div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:2,flexWrap:"wrap"}}>
+                          <span style={{color:"#1a1a2e",fontWeight:800,fontSize:16}}>{w.label}</span>
+                          {doneThisWeek && <span style={{fontSize:16}}>✅</span>}
+                        </div>
+                        {w.subtitle && <div style={{color:w.color,fontSize:12,fontWeight:700,marginBottom:3}}>{w.subtitle}</div>}
+                        {w.rest && <div style={{color:"#9ca3af",fontSize:12,fontWeight:500}}>Recuperação 😴</div>}
+                        {totalEx > 0 && (
+                          <div style={{marginTop:5}}>
+                            <div style={{background:"#f3f4f6",borderRadius:999,height:4,overflow:"hidden"}}>
+                              <div style={{height:"100%",borderRadius:999,background:w.color,width:`${(doneEx/totalEx)*100}%`,transition:"width 0.4s"}}/>
+                            </div>
+                            <span style={{color:"#9ca3af",fontSize:11,marginTop:2,display:"block",fontWeight:500}}>{doneEx}/{totalEx} exercícios</span>
+                          </div>
+                        )}
+                      </div>
+                      <span style={{color:"#d1d5db",fontSize:18,flexShrink:0}}>›</span>
+                    </button>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+
+          {showHistory && <WeekHistoryModal onClose={()=>setShowHistory(false)}/>}
+          {showMonthly && <MonthlyPerformanceModal onClose={()=>setShowMonthly(false)}/>}
+        </div>
+      );
+    }
+
+    // ─── APP ROOT ─────────────────────────────────────────────────────────────────
+
+    function App() {
+      const [selectedDay, setSelectedDay] = React.useState(null);
+      return (
+        <div style={{maxWidth:480,margin:"0 auto",fontFamily:"'Segoe UI',system-ui,sans-serif"}}>
+          {selectedDay === null
+            ? <Home onSelectDay={setSelectedDay}/>
+            : <DayView dayIndex={selectedDay} onBack={()=>setSelectedDay(null)}/>
+          }
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App/>);
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js');
+    }
+  </script>
+</body>
+</html>
