@@ -1,10 +1,11 @@
-const CACHE_NAME = 'meu-treino-v2';
+const CACHE_NAME = 'meu-treino-v3';
 const ASSETS = [
   '/app-treino/',
   '/app-treino/index.html',
   '/app-treino/manifest.json',
   '/app-treino/icon-192.png',
   '/app-treino/icon-512.png',
+  '/app-treino/gym-icon.jpg',
 ];
 
 self.addEventListener('install', event => {
@@ -23,8 +24,15 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+// Rede primeiro, cache como fallback (garante que atualizações aparecem imediatamente)
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
+    fetch(event.request)
+      .then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
