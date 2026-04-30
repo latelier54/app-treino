@@ -1,6 +1,6 @@
 {
-    "name": "Meu Treino",
-    "short_name": "Treino",
+    "name": "One More Rep",
+    "short_name": "One More Rep",
     "description": "App de treino pessoal com rastreamento de metas e hábitos",
     "id": "/app-treino/",
     "start_url": "/app-treino/",
@@ -10,6 +10,12 @@
     "background_color": "#f0edf8",
     "theme_color": "#a855f7",
     "icons": [
+        {
+            "src": "gym-icon.jpg",
+            "sizes": "any",
+            "type": "image/jpeg",
+            "purpose": "any maskable"
+        },
         {
             "src": "icon-192.png",
             "sizes": "192x192",
